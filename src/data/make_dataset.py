@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import click
+#import click
 import logging
 from pathlib import Path
 from scipy.io import loadmat
@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from dotenv import find_dotenv, load_dotenv
 
+# if acq file -> load acq file -> data, sampling_rate = nk.read_acqknowledge('file.acq') 
 class DataPreparation:
     def __init__(self, filepath: Path, sampling_rate: int):
         self.filepath = filepath
@@ -24,11 +25,14 @@ class DataPreparation:
         labels_units = [f'{label} ({unit})' for label, unit in zip(labels, units)]
         return pd.DataFrame(data, columns=labels_units)
 
-@click.command()
-@click.argument('data_file', type=click.Path(exists=True))
-@click.argument('sampling_rate', type=int)
-@click.argument('excel_path', type=click.Path())
-def main(data_file, sampling_rate, excel_path):
+''' if click is used, then the following code is used to run the script from the command line
+#@click.command()
+#@click.argument('data_file', type=click.Path(exists=True))
+#@click.argument('sampling_rate', type=int)
+#@click.argument('excel_path', type=click.Path())
+'''
+
+def main(data_file: Path, sampling_rate: int, excel_path: Path):
     logger = logging.getLogger(__name__)
     logger.info('making final data set from .mat raw data')
 
@@ -39,12 +43,13 @@ def main(data_file, sampling_rate, excel_path):
         df = data_prep.create_dataframe(data, labels, units)
         # You may want to do something with df and excel_path here
 
+    print("Dataset created!")  # Moved inside the main function
+    return df
+
 if __name__ == '__main__':
-    log_fmt = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-    logging.basicConfig(level=logging.INFO, format=log_fmt)
-
-    # load up the .env entries as environment variables
-    load_dotenv(find_dotenv())
-
     main()
+
+    
+
+    
 

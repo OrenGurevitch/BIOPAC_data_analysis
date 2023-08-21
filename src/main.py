@@ -1,22 +1,29 @@
-from data.make_dataset import run as make_dataset
-from features.build_features import run as build_features
-from models.train_model import run as train_model
-from models.predict_model import run as predict_model
-from visualization.visualize import run as visualize
+data_file = "C:\\Users\\oreng\\OneDrive - McGill University\\Documents\\Masters_Program\\Pilot Study\\recordings_pilot\\8_OG_pilot_tobii_biopac\\8_OG_pilot_July_25_2023.mat"
+sampling_rate = 2000
+excel_path = "C:\\Users\\oreng\\OneDrive - McGill University\\Documents\\Masters_Program\\Measurements\\BIOPAC\\analysis2excel\\analysis.xlsx"
 
-# Make the dataset
-make_dataset()
+from data.make_dataset import main as make_dataset
+# Make the dataset and receive the DataFrame and sampling rate
+df = make_dataset(data_file, sampling_rate, excel_path)
 
-# Build features
-build_features()
+from features.build_features import main as build_features
+# Build features using the received DataFrame and sampling rate
+build_features(df, sampling_rate)
+
+''' The following lines are commented out because they are not yet implemented
+#from models.train_model import run as train_model
+#from models.predict_model import run as predict_model
+#from visualization.visualize import run as visualize
 
 # Train the model
-train_model()
+#train_model()
 
 # Make predictions
-predict_model()
+#predict_model()
 
 # Create visualizations
-visualize()
+#visualize()
+'''
 
 print("Analysis complete!")
+
