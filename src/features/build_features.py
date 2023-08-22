@@ -27,7 +27,15 @@ class FeatureBuilder:
         slider_processed = self._process_slider()
 
         events = self._create_events()
-        return ecg_processed, rsp_processed, eda_processed, ppg_processed, slider_processed, events
+
+        processed_dataframes = {
+            'ecg': ecg_processed,
+            'rsp': rsp_processed,
+            'eda': eda_processed,
+            'ppg': ppg_processed,
+            'slider': slider_processed
+        }
+        return processed_dataframes, events
 
     def _create_events(self):
         event_labels = ["Absorptive", "1stSilence", "Self-Chosen Absorptive", "2ndSilence", "Self-Chosen Non-absorptive", "3rdSilence"]
@@ -45,7 +53,6 @@ def main(df: pd.DataFrame, sampling_rate: int):
          "Slider": "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
      }
      builder = FeatureBuilder(df, sampling_rate, column_labels)
-     ecg_processed, rsp_processed, eda_processed, ppg_processed, slider_processed, events = builder.process_signals()
      print("Features created!")
-     return ecg_processed, rsp_processed, eda_processed, ppg_processed, slider_processed, events
+     return builder.process_signals()
 

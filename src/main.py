@@ -8,11 +8,17 @@ df = make_dataset(data_file, sampling_rate, excel_path)
 
 from features.build_features import main as build_features
 # Build features using the received DataFrame and sampling rate
-ecg_processed, rsp_processed, eda_processed, ppg_processed, slider_processed, events = build_features(df, sampling_rate)
+processed_dataframes, events = build_features(df, sampling_rate)
 
-#from visualization.visualize import main as visualize
-#visualize()
+from visualization.visualize import main as visualize
+#Choose which features to visualize?
 
+HRV= True, excel_table=True, ecg=True, rsp=True, eda=True, ppg=True, slider=True, rates_and_events=True
+visualize(processed_dataframes, sampling_rate, excel_path, events, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events)
+
+
+#from src.visualization.gui import show_gui
+#show_gui(processed_dataframes, sampling_rate, excel_path, events)
 ''' The following lines are commented out because they are not yet implemented
 #from models.train_model import run as train_model
 #from models.predict_model import run as predict_model
@@ -23,9 +29,6 @@ ecg_processed, rsp_processed, eda_processed, ppg_processed, slider_processed, ev
 
 # Make predictions
 #predict_model()
-
-# Create visualizations
-#visualize()
 '''
 
 print("Analysis complete!")
