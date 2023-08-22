@@ -48,8 +48,3 @@ def main(data_file: Path, sampling_rate: int, excel_path: Path):
 
 if __name__ == '__main__':
     main()
-
-    
-
-    
-

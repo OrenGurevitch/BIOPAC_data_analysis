@@ -8,7 +8,10 @@ df = make_dataset(data_file, sampling_rate, excel_path)
 
 from features.build_features import main as build_features
 # Build features using the received DataFrame and sampling rate
-build_features(df, sampling_rate)
+ecg_processed, rsp_processed, eda_processed, ppg_processed, slider_processed, events = build_features(df, sampling_rate)
+
+#from visualization.visualize import main as visualize
+#visualize()
 
 ''' The following lines are commented out because they are not yet implemented
 #from models.train_model import run as train_model
