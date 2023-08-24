@@ -9,7 +9,8 @@ df = make_dataset(data_file, sampling_rate, excel_path)
 from features.build_features import main as build_features
 # Build features using the received DataFrame and sampling rate
 processed_dataframes, events = build_features(df, sampling_rate)
-
+print("processed_dataframes: ", processed_dataframes)
+print("events: ", events)
 from visualization.visualize import main as visualize
 #Choose which features to visualize?
 visualize(df, processed_dataframes, sampling_rate, excel_path, events, HRV=True, excel_table=True, ecg=True, rsp=True, eda=True, ppg=True, slider=True, rates_and_events=True)

@@ -33,6 +33,7 @@ class DataPreparation:
 '''
 
 def main(data_file: Path, sampling_rate: int, excel_path: Path):
+    print("Making dataset...")
     logger = logging.getLogger(__name__)
     logger.info('making final data set from .mat raw data')
 

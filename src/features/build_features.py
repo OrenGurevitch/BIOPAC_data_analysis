@@ -45,14 +45,15 @@ class FeatureBuilder:
         return nk.events_create(event_onsets=event_onsets_indices, event_labels=event_labels_unique)
  
 def main(df: pd.DataFrame, sampling_rate: int):
-     column_labels = {
-         "eda": "EDA100C (microsiemens)",
-         "rsp": "RSP100C (Volts)",
-         "ecg": "ECG100C (mV)",
-         "ppg": "Status, OXY100C (Status)",
-         "Slider": "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
-     }
-     builder = FeatureBuilder(df, sampling_rate, column_labels)
-     print("Features created!")
-     return builder.process_signals()
+    print("Building features...")
+    column_labels = {
+        "eda": "EDA100C (microsiemens)",
+        "rsp": "RSP100C (Volts)",
+        "ecg": "ECG100C (mV)",
+        "ppg": "Status, OXY100C (Status)",
+        "Slider": "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
+    }
+    builder = FeatureBuilder(df, sampling_rate, column_labels)
+    print("Features created!")
+    return builder.process_signals()
 

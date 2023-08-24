@@ -4,14 +4,15 @@ import neurokit2 as nk
 import matplotlib.pyplot as plt
 
 class NKPlotProcessed:
-    def __init__(self, sampling_rate, processed_dataframes):
+    def __init__(self, df, sampling_rate, processed_dataframes):
+        self.df = df
         self.sampling_rate = sampling_rate
         self.processed_dataframes = processed_dataframes
-        self.time = self.generate_time()
+        self.time = self.generate_time()  
 
     def generate_time(self):
         """Generate time array in minutes."""
-        return np.arange(len(self.processed_dataframes['slider'])) / self.sampling_rate / 60
+        return np.arange(len(self.df)) / self.sampling_rate / 60
     
     def plot_processed(self, ecg=False, rsp=False, eda=False, ppg=False, slider=False):
         if ecg:
@@ -46,25 +47,27 @@ class HRVPlot:
         plt.show()
 
 class ExcelTable:
-    def __init__(self, analysis_function, signals, events, SAMPLING_RATE, excel_path=None):
-        self.analysis_function = analysis_function
-        self.signals = signals
+    def __init__(self, processed_dataframes, events, sampling_rate, excel_path=None):
         self.events = events
-        self.SAMPLING_RATE = SAMPLING_RATE
+        self.sampling_rate = sampling_rate
         self.excel_path = excel_path
+        self.processed_dataframes = processed_dataframes
+        self.ecg_signals = self.processed_dataframes['ecg']
+        self.rsp_signals = self.processed_dataframes['rsp']
+        self.eda_signals = self.processed_dataframes['eda']
     
-    def analysis_dataframe(self):
+    def analysis_dataframe(self, analysis_function, signal, events):
         results_list = []
 
         for onset, label in zip(self.events["onset"], self.events["label"]):
-            offset = onset + 7 * 60 * self.SAMPLING_RATE if "Silence" not in label else onset + 3 * 60 * self.SAMPLING_RATE
+            offset = onset + 7 * 60 * self.sampling_rate if "Silence" not in label else onset + 3 * 60 * self.sampling_rate
             epoch = self.signals.iloc[onset:offset]
 
             if epoch.empty:
                 print(f"Warning: Empty epoch for label {label}")
                 continue
 
-            result = self.analysis_function(epoch, sampling_rate=self.SAMPLING_RATE)
+            result = self.analysis_function(epoch, sampling_rate=self.sampling_rate)
             result.insert(0, 'Event_Label', label)
             results_list.append(result)
 
@@ -73,9 +76,9 @@ class ExcelTable:
         print(results_df)
 
     def save_to_excel(self, path4excel, eda_signals, ecg_signals, rsp_signals, events):
-        eda_analysis_df = self.analysis_dataframe(nk.eda_intervalrelated, eda_signals, events)
-        ecg_analysis_df = self.analysis_dataframe(nk.ecg_analyze, ecg_signals, events)
-        rsp_analysis_df = self.analysis_dataframe(nk.rsp_intervalrelated, rsp_signals, events)
+        eda_analysis_df = self.analysis_dataframe(nk.eda_intervalrelated, self.eda_signals, events)
+        ecg_analysis_df = self.analysis_dataframe(nk.ecg_analyze, self.ecg_signals, events)
+        rsp_analysis_df = self.analysis_dataframe(nk.rsp_intervalrelated, self.rsp_signals, events)
 
         with pd.ExcelWriter(path4excel) as writer:
             eda_analysis_df.to_excel(writer, sheet_name='EDA_Analysis')
@@ -138,8 +141,8 @@ class RatesAndEvents:
         plt.show()
 
 def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: int, excel_path, events, HRV=False, excel_table=False, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False):
-    
-    plot_processed = NKPlotProcessed(sampling_rate, processed_dataframes)
+    print("Visualizing data...")
+    plot_processed = NKPlotProcessed(df, sampling_rate, processed_dataframes)
     plot_processed.plot_processed(ecg, rsp, eda, ppg, slider)
 
     if rates_and_events:
@@ -151,6 +154,7 @@ def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: in
         hrv_plot.plot()
 
     if excel_table:
-        excel_table_obj = ExcelTable(analysis_function, signals, events, SAMPLING_RATE, excel_path)
-        excel_table_obj.save_to_excel(path4excel, eda_signals, ecg_signals, rsp_signals, events)
+        excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate, excel_path)
+        excel_table_obj.save_to_excel()
 
+    print("Data visualization complete!")
