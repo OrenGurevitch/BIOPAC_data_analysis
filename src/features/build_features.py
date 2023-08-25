@@ -1,5 +1,6 @@
 import neurokit2 as nk
 import pandas as pd
+import os
 
 class FeatureBuilder:
     def __init__(self, df: pd.DataFrame, sampling_rate: int, column_labels: dict):
@@ -45,6 +46,8 @@ class FeatureBuilder:
         event_onsets_indices = [int(i * self.sampling_rate) for i in event_onsets_seconds]
         return nk.events_create(event_onsets=event_onsets_indices, event_labels=event_labels_unique)
  
+
+
 def main(df: pd.DataFrame, sampling_rate: int):
     print("Building features...")
     column_labels = {
@@ -55,6 +58,17 @@ def main(df: pd.DataFrame, sampling_rate: int):
         "Slider": "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
     }
     builder = FeatureBuilder(df, sampling_rate, column_labels)
+    processed_dataframes = builder.process_signals()
+
+    # Define path to save processed data
+    processed_data_path = os.path.join(os.path.dirname(__file__), "data", "processed", "processed_data.csv")
+    processed_dataframes.to_csv(processed_data_path)
+
+    # Assuming processed_dataframes is a dictionary of dataframes, you can save each one like this:
+    for key, processed_df in processed_dataframes.items():
+        processed_df_path = processed_data_path.replace('processed_data', f'processed_data_{key}')
+        processed_df.to_csv(processed_df_path)
+
     print("Features created!")
-    return builder.process_signals()
+    return processed_dataframes
 

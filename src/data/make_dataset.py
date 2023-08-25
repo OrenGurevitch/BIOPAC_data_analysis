@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
-#import click
 import logging
 from pathlib import Path
 from scipy.io import loadmat
 import numpy as np
 import pandas as pd
 from dotenv import find_dotenv, load_dotenv
+import os
 
 # if acq file -> load acq file -> data, sampling_rate = nk.read_acqknowledge('file.acq') 
 class DataPreparation:
@@ -42,9 +41,11 @@ def main(data_file: Path, sampling_rate: int, excel_path: Path):
 
     if data is not None:
         df = data_prep.create_dataframe(data, labels, units)
-        # You may want to do something with df and excel_path here
+        # Save the raw dataframe
+        raw_data_path = os.path.join(os.path.dirname(__file__), "data", "raw", "raw_data.csv")
+        df.to_csv(raw_data_path)
 
-    print("Dataset created!")  # Moved inside the main function
+    print(f"Dataset created and saved in {raw_data_path}!")
     return df
 
 if __name__ == '__main__':
