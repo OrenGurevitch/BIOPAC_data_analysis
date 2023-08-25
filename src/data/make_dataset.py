@@ -49,7 +49,7 @@ def main(data_file: Path, sampling_rate: int, researcher_initials: str):
         raw_excel_path = os.path.join(os.path.dirname(__file__), "data", "raw", raw_excel_file_name)
         df.to_csv(raw_excel_path)
 
-    print(f"Dataset created!")
+    print(f"Dataset created and saved in {raw_data_path}!")
     return df
 
 if __name__ == '__main__':
