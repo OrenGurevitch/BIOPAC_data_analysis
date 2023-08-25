@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from dotenv import find_dotenv, load_dotenv
 import os
+from datetime import datetime
 
 # if acq file -> load acq file -> data, sampling_rate = nk.read_acqknowledge('file.acq') 
 class DataPreparation:
@@ -31,7 +32,7 @@ class DataPreparation:
 #@click.argument('excel_path', type=click.Path())
 '''
 
-def main(data_file: Path, sampling_rate: int, excel_path: Path):
+def main(data_file: Path, sampling_rate: int, researcher_initials: str):
     print("Making dataset...")
     logger = logging.getLogger(__name__)
     logger.info('making final data set from .mat raw data')
@@ -42,10 +43,13 @@ def main(data_file: Path, sampling_rate: int, excel_path: Path):
     if data is not None:
         df = data_prep.create_dataframe(data, labels, units)
         # Save the raw dataframe
-        raw_data_path = os.path.join(os.path.dirname(__file__), "data", "raw", "raw_data.csv")
-        df.to_csv(raw_data_path)
+        # Define path to save processed data
+        current_date = datetime.now().strftime("%Y_%m_%d")
+        raw_excel_file_name = f"preprocessed_data_{researcher_initials}_{current_date}.csv"
+        raw_excel_path = os.path.join(os.path.dirname(__file__), "data", "raw", raw_excel_file_name)
+        df.to_csv(raw_excel_path)
 
-    print(f"Dataset created and saved in {raw_data_path}!")
+    print(f"Dataset created!")
     return df
 
 if __name__ == '__main__':

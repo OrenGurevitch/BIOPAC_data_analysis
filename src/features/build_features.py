@@ -1,6 +1,7 @@
 import neurokit2 as nk
 import pandas as pd
 import os
+from datetime import datetime
 
 class FeatureBuilder:
     def __init__(self, df: pd.DataFrame, sampling_rate: int, column_labels: dict):
@@ -48,8 +49,9 @@ class FeatureBuilder:
  
 
 
-def main(df: pd.DataFrame, sampling_rate: int):
+def main(df: pd.DataFrame, sampling_rate: int, researcher_initials: str):
     print("Building features...")
+    
     column_labels = {
         "eda": "EDA100C (microsiemens)",
         "rsp": "RSP100C (Volts)",
@@ -57,18 +59,21 @@ def main(df: pd.DataFrame, sampling_rate: int):
         "ppg": "Status, OXY100C (Status)",
         "Slider": "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
     }
+    
     builder = FeatureBuilder(df, sampling_rate, column_labels)
-    processed_dataframes = builder.process_signals()
+    preprocessed_dataframes = builder.process_signals()
 
-    # Define path to save processed data
-    processed_data_path = os.path.join(os.path.dirname(__file__), "data", "processed", "processed_data.csv")
-    processed_dataframes.to_csv(processed_data_path)
+    # Define the path to save processed data
+    current_date = datetime.now().strftime("%Y_%m_%d")
+    bld_excel_file_name = f"preprocessed_data_{researcher_initials}_{current_date}.csv"
+    bld_excel_path = os.path.join(os.path.dirname(__file__), "data", "interim", bld_excel_file_name)
 
-    # Assuming processed_dataframes is a dictionary of dataframes, you can save each one like this:
-    for key, processed_df in processed_dataframes.items():
-        processed_df_path = processed_data_path.replace('processed_data', f'processed_data_{key}')
-        processed_df.to_csv(processed_df_path)
-
-    print("Features created!")
-    return processed_dataframes
+    # Save each DataFrame from the preprocessed_dataframes dictionary
+    for key, preprocessed_df in preprocessed_dataframes.items():
+        preprocessed_df_path = bld_excel_path.replace('preprocessed_data', f'preprocessed_data_{key}')
+        preprocessed_df.to_csv(preprocessed_df_path)
+        
+    print(f"Data features created and saved in {preprocessed_df_path}!")
+    
+    return preprocessed_dataframes
 

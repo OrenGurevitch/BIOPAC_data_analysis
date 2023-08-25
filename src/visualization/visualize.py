@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import neurokit2 as nk
 import matplotlib.pyplot as plt
+import os
+from datetime import datetime
 
 class NKPlotProcessed:
     def __init__(self, df, sampling_rate, processed_dataframes):
@@ -143,8 +145,13 @@ class RatesAndEvents:
         plt.tight_layout()
         plt.show()
 
-def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: int, excel_path, events, HRV=False, excel_table=False, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False):
+def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: int, researcher_initials: str, events, HRV=False, excel_table=False, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False):
     print("Visualizing data...")
+
+    current_date = datetime.now().strftime("%Y_%m_%d")
+    vis_excel_file_name = f"processed_data_{researcher_initials}_{current_date}.csv"
+    vis_excel_path = os.path.join(os.path.dirname(__file__), "data", "processed", vis_excel_file_name)
+    
     plot_processed = NKPlotProcessed(df, sampling_rate, processed_dataframes)
     plot_processed.plot_processed(ecg, rsp, eda, ppg, slider)
 
@@ -157,7 +164,7 @@ def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: in
         hrv_plot.plot()
 
     if excel_table:
-        excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate, excel_path)
-        excel_table_obj.save_to_excel(excel_path)
+        excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate, vis_excel_path)
+        excel_table_obj.save_to_excel(vis_excel_path)
 
     print("Data visualization complete!")
