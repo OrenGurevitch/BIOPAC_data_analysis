@@ -16,6 +16,7 @@ class NKPlotProcessed:
     
     def plot_processed(self, ecg=False, rsp=False, eda=False, ppg=False, slider=False):
         if ecg:
+            print(self.processed_dataframes['ecg'])
             nk.ecg_plot(self.processed_dataframes['ecg'], sampling_rate=self.sampling_rate)
             plt.show()
         if rsp:

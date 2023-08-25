@@ -8,7 +8,8 @@ class FeatureBuilder:
         self.column_labels = column_labels
 
     def _process(self, process_func, column_label):
-        return process_func(self.df[column_label], self.sampling_rate)
+        nk_processed_signals, _ = process_func(self.df[column_label], self.sampling_rate)
+        return nk_processed_signals
 
     def _process_slider(self):
         column_label = "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
