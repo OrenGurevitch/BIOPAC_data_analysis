@@ -13,7 +13,7 @@ processed_dataframes, events = build_features(df, sampling_rate)
 print("events: ", events)
 from visualization.visualize import main as visualize
 #Choose which features to visualize?
-visualize(df, processed_dataframes, sampling_rate, excel_path, events, HRV=True, excel_table=True, ecg=True, rsp=True, eda=True, ppg=True, slider=True, rates_and_events=True)
+visualize(df, processed_dataframes, sampling_rate, excel_path, events, HRV=False, excel_table=True, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False)
 
 #from src.visualization.gui import show_gui
 #show_gui(processed_dataframes, sampling_rate, excel_path, events)

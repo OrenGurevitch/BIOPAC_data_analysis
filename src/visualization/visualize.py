@@ -57,29 +57,31 @@ class ExcelTable:
         self.rsp_signals = self.processed_dataframes['rsp']
         self.eda_signals = self.processed_dataframes['eda']
     
-    def analysis_dataframe(self, analysis_function, signal, events):
+    def analysis_dataframe(self, analysis_function, signal):
         results_list = []
 
         for onset, label in zip(self.events["onset"], self.events["label"]):
             offset = onset + 7 * 60 * self.sampling_rate if "Silence" not in label else onset + 3 * 60 * self.sampling_rate
-            epoch = self.signals.iloc[onset:offset]
+            epoch = signal.iloc[onset:offset]
 
             if epoch.empty:
                 print(f"Warning: Empty epoch for label {label}")
                 continue
 
-            result = self.analysis_function(epoch, sampling_rate=self.sampling_rate)
+            result = analysis_function(epoch, sampling_rate=self.sampling_rate) # Use the argument, not self
             result.insert(0, 'Event_Label', label)
             results_list.append(result)
 
         results_df = pd.concat(results_list, ignore_index=True)
         results_df = results_df.transpose()
         print(results_df)
+        return results_df
 
-    def save_to_excel(self, path4excel, eda_signals, ecg_signals, rsp_signals, events):
-        eda_analysis_df = self.analysis_dataframe(nk.eda_intervalrelated, self.eda_signals, events)
-        ecg_analysis_df = self.analysis_dataframe(nk.ecg_analyze, self.ecg_signals, events)
-        rsp_analysis_df = self.analysis_dataframe(nk.rsp_intervalrelated, self.rsp_signals, events)
+
+    def save_to_excel(self, path4excel):
+        eda_analysis_df = self.analysis_dataframe(nk.eda_intervalrelated, self.eda_signals)
+        ecg_analysis_df = self.analysis_dataframe(nk.ecg_analyze, self.ecg_signals)
+        rsp_analysis_df = self.analysis_dataframe(nk.rsp_intervalrelated, self.rsp_signals)
 
         with pd.ExcelWriter(path4excel) as writer:
             eda_analysis_df.to_excel(writer, sheet_name='EDA_Analysis')
@@ -156,6 +158,6 @@ def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: in
 
     if excel_table:
         excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate, excel_path)
-        excel_table_obj.save_to_excel()
+        excel_table_obj.save_to_excel(excel_path)
 
     print("Data visualization complete!")
