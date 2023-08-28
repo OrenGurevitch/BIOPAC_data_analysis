@@ -8,7 +8,7 @@ researcher_initials = "OG"
 
 from data.make_dataset import main as make_dataset
 # Make the dataset and receive the DataFrame and sampling rate
-df = make_dataset(data_file, sampling_rate)
+df = make_dataset(data_file, sampling_rate, researcher_initials)
 
 from features.build_features import main as build_features
 # Build features using the received DataFrame and sampling rate

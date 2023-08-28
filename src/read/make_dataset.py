@@ -42,14 +42,23 @@ def main(data_file: Path, sampling_rate: int, researcher_initials: str):
 
     if data is not None:
         df = data_prep.create_dataframe(data, labels, units)
-        # Save the raw dataframe
+        
         # Define path to save processed data
         current_date = datetime.now().strftime("%Y_%m_%d")
         raw_excel_file_name = f"preprocessed_data_{researcher_initials}_{current_date}.csv"
-        raw_excel_path = os.path.join(os.path.dirname(__file__), "data", "raw", raw_excel_file_name)
+
+        # Determine script's directory and build path from there
+        script_dir = Path(__file__).resolve().parent
+        data_folder = script_dir.parent / "data" / "raw"
+        raw_excel_path = data_folder / raw_excel_file_name
+
+        # Create the directory if it does not exist
+        if not data_folder.exists():
+            data_folder.mkdir(parents=True)
+
         df.to_csv(raw_excel_path)
 
-    print(f"Dataset created and saved in {raw_data_path}!")
+    print(f"Dataset created and saved in {raw_excel_path}!")
     return df
 
 if __name__ == '__main__':
