@@ -38,7 +38,8 @@ Project Organization
     │   ├── data           <- Script to import and read data
     │   │   └── make_dataset.py
     │   │
-    │   ├── features       <- Script to turn raw data into processed physiological signals and event markers via NeuroKit, saving them as CSV files.
+    │   ├── features       <- Script to turn raw data into processed physiological signals and event markers via 
+    │   │   │                 NeuroKit, saving them as CSV files.
     │   │   └── build_features.py
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make

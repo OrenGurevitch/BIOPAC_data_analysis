@@ -4,6 +4,7 @@ import neurokit2 as nk
 import matplotlib.pyplot as plt
 import os
 from datetime import datetime
+from pathlib import Path
 
 class NKPlotProcessed:
     def __init__(self, df, sampling_rate, processed_dataframes):
@@ -50,10 +51,9 @@ class HRVPlot:
         plt.show()
 
 class ExcelTable:
-    def __init__(self, processed_dataframes, events, sampling_rate, excel_path=None):
+    def __init__(self, processed_dataframes, events, sampling_rate):
         self.events = events
         self.sampling_rate = sampling_rate
-        self.excel_path = excel_path
         self.processed_dataframes = processed_dataframes
         self.ecg_signals = self.processed_dataframes['ecg']
         self.rsp_signals = self.processed_dataframes['rsp']
@@ -79,18 +79,28 @@ class ExcelTable:
         print(results_df)
         return results_df
 
-
-    def save_to_excel(self, path4excel):
+    def analysis_data_signals(self):
         eda_analysis_df = self.analysis_dataframe(nk.eda_intervalrelated, self.eda_signals)
         ecg_analysis_df = self.analysis_dataframe(nk.ecg_analyze, self.ecg_signals)
         rsp_analysis_df = self.analysis_dataframe(nk.rsp_intervalrelated, self.rsp_signals)
 
-        with pd.ExcelWriter(path4excel) as writer:
+        return eda_analysis_df, ecg_analysis_df, rsp_analysis_df
+
+    def save2path(self, eda_analysis_df, ecg_analysis_df, rsp_analysis_df, researcher_initials: str, feature_type: str):
+        current_date = datetime.now().strftime("%Y_%m_%d")
+        excel_file_name = f"processed_data_{feature_type}_{researcher_initials}_{current_date}.csv"
+        script_dir = Path(__file__).resolve().parent.parent
+        data_folder = script_dir.parent / "data" / "processed"
+        excel_path = data_folder / excel_file_name
+        if not data_folder.exists():
+            data_folder.mkdir(parents=True)
+
+        with pd.ExcelWriter(excel_path) as writer:
             eda_analysis_df.to_excel(writer, sheet_name='EDA_Analysis')
             ecg_analysis_df.to_excel(writer, sheet_name='ECG_Analysis')
             rsp_analysis_df.to_excel(writer, sheet_name='RSP_Analysis')
 
-        print(f"Results saved to Excel at {self.excel_path}")
+        print(f"Results saved to Excel at {excel_path}")
 
 class RatesAndEvents:
     def __init__(self, sampling_rate, df, events, processed_dataframes):
@@ -145,12 +155,9 @@ class RatesAndEvents:
         plt.tight_layout()
         plt.show()
 
+
 def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: int, researcher_initials: str, events, HRV=False, excel_table=False, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False):
     print("Visualizing data...")
-
-    current_date = datetime.now().strftime("%Y_%m_%d")
-    vis_excel_file_name = f"processed_data_{researcher_initials}_{current_date}.csv"
-    vis_excel_path = os.path.join(os.path.dirname(__file__), "data", "processed", vis_excel_file_name)
     
     plot_processed = NKPlotProcessed(df, sampling_rate, processed_dataframes)
     plot_processed.plot_processed(ecg, rsp, eda, ppg, slider)
@@ -164,7 +171,8 @@ def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: in
         hrv_plot.plot()
 
     if excel_table:
-        excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate, vis_excel_path)
-        excel_table_obj.save_to_excel(vis_excel_path)
+        excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate)
+        eda_analysis_df, ecg_analysis_df, rsp_analysis_df = excel_table_obj.analysis_data_signals()
+        excel_table_obj.save2path(eda_analysis_df, ecg_analysis_df, rsp_analysis_df, researcher_initials, "excel_table")
 
     print("Data visualization complete!")

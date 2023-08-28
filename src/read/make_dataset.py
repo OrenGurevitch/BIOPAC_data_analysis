@@ -25,7 +25,7 @@ class DataPreparation:
         labels_units = [f'{label} ({unit})' for label, unit in zip(labels, units)]
         return pd.DataFrame(data, columns=labels_units)
     
-    def save_dataframe(self, df: pd.DataFrame, researcher_initials: str):
+    def save2path(self, df: pd.DataFrame, researcher_initials: str):
         current_date = datetime.now().strftime("%Y_%m_%d")
         raw_excel_file_name = f"preprocessed_data_{researcher_initials}_{current_date}.csv"
         script_dir = Path(__file__).resolve().parent.parent
@@ -47,7 +47,7 @@ def main(data_file: Path, sampling_rate: int, researcher_initials: str):
 
     if data is not None:
         df = data_prep.create_dataframe(data, labels, units)
-        raw_excel_path = data_prep.save_dataframe(df, researcher_initials)
+        raw_excel_path = data_prep.save2path(df, researcher_initials)
         print(f"Dataset created and saved in {raw_excel_path}")
 
     return df
