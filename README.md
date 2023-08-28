@@ -35,7 +35,7 @@ Project Organization
     ├── src                <- Source code for use in this project.
     │   ├── __init__.py    <- Makes src a Python module
     │   │
-    │   ├── data           <- Script to import and read data
+    │   ├── read           <- Script to import and read data
     │   │   └── make_dataset.py
     │   │
     │   ├── features       <- Script to turn raw data into processed physiological signals and event markers via 
@@ -50,7 +50,10 @@ Project Organization
     │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
     │   │   └── train_model.py
     │   │   └── visualize.py
-    │   │
+    │   │    
+    │   ├── gui           <- Script to run the gui
+    │   │   └── run_gui.py
+    │   │    
     │   └── main.py        <- Script for running the codes 
     │
     └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
