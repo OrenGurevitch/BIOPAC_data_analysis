@@ -24,13 +24,18 @@ class DataPreparation:
     def create_dataframe(self, data: np.array, labels: np.array, units: np.array) -> pd.DataFrame:
         labels_units = [f'{label} ({unit})' for label, unit in zip(labels, units)]
         return pd.DataFrame(data, columns=labels_units)
+    
+    def save_dataframe(self, df: pd.DataFrame, researcher_initials: str):
+        current_date = datetime.now().strftime("%Y_%m_%d")
+        raw_excel_file_name = f"preprocessed_data_{researcher_initials}_{current_date}.csv"
+        script_dir = Path(__file__).resolve().parent.parent
+        data_folder = script_dir.parent / "data" / "raw"
+        raw_excel_path = data_folder / raw_excel_file_name
+        if not data_folder.exists():
+            data_folder.mkdir(parents=True)
+        df.to_csv(raw_excel_path)
+        return raw_excel_path
 
-''' if click is used, then the following code is used to run the script from the command line
-#@click.command()
-#@click.argument('data_file', type=click.Path(exists=True))
-#@click.argument('sampling_rate', type=int)
-#@click.argument('excel_path', type=click.Path())
-'''
 
 def main(data_file: Path, sampling_rate: int, researcher_initials: str):
     print("Making dataset...")
@@ -42,23 +47,9 @@ def main(data_file: Path, sampling_rate: int, researcher_initials: str):
 
     if data is not None:
         df = data_prep.create_dataframe(data, labels, units)
-        
-        # Define path to save processed data
-        current_date = datetime.now().strftime("%Y_%m_%d")
-        raw_excel_file_name = f"preprocessed_data_{researcher_initials}_{current_date}.csv"
+        raw_excel_path = data_prep.save_dataframe(df, researcher_initials)
+        print(f"Dataset created and saved in {raw_excel_path}")
 
-        # Determine script's directory and build path from there
-        script_dir = Path(__file__).resolve().parent
-        data_folder = script_dir.parent / "data" / "raw"
-        raw_excel_path = data_folder / raw_excel_file_name
-
-        # Create the directory if it does not exist
-        if not data_folder.exists():
-            data_folder.mkdir(parents=True)
-
-        df.to_csv(raw_excel_path)
-
-    print(f"Dataset created and saved in {raw_excel_path}!")
     return df
 
 if __name__ == '__main__':

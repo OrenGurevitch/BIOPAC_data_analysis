@@ -1,12 +1,9 @@
-import datetime as datetime
-import os as os
-
 data_file = "C:\\Users\\oreng\\OneDrive - McGill University\\Documents\\Masters_Program\\Pilot Study\\recordings_pilot\\8_OG_pilot_tobii_biopac\\8_OG_pilot_July_25_2023.mat"
 sampling_rate = 2000
 
 researcher_initials = "OG"
 
-from data.make_dataset import main as make_dataset
+from read.make_dataset import main as make_dataset
 # Make the dataset and receive the DataFrame and sampling rate
 df = make_dataset(data_file, sampling_rate, researcher_initials)
 
