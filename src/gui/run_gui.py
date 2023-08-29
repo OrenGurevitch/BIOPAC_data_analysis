@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
 from tkinter import ttk  # ttk (themed Tkinter) for a more modern look
+import random
 
 class DataAnalysisGUI:
     def __init__(self):
@@ -13,6 +14,8 @@ class DataAnalysisGUI:
         self.sampling_rate = 0
         self.researcher_initials = ""
         self.participant_name = ""
+        self.participant_id = ""
+
         self.HRV = tk.BooleanVar(value=False)
         self.excel_table = tk.BooleanVar(value=False)
         self.ecg = tk.BooleanVar(value=False)
@@ -108,6 +111,8 @@ class DataAnalysisGUI:
         if not validation_pass:
             messagebox.showwarning("Missing Info", "Please fill in the required fields highlighted in red")
         else:
+            # This is where you could generate the participant ID
+            self.participant_id = self.generate_participant_id(self.participant_name)
             self.root.quit()
 
     def submit(self):
@@ -115,11 +120,32 @@ class DataAnalysisGUI:
         self.sampling_rate = int(self.rate_entry.get())
         self.researcher_initials = self.initials_entry.get()
         self.participant_name = self.name_entry.get()
+        
+        # Generate the unique participant ID
+        self.participant_id = self.generate_participant_id(self.participant_name)
+        
         self.root.quit()
+
+    def generate_participant_id(self, participant_name):
+        # Create a unique participant ID based on the participant's name
+        random_id = random.randint(1000, 9999)
+
+        # Create a unique participant ID based on the participant's name and random ID
+        participant_id = f"{participant_name[:2].upper()}{random_id}"
+        
+        return participant_id
 
     def run(self):
         self.root.mainloop()
-        return self.data_file, self.sampling_rate, self.researcher_initials, self.participant_name, self.HRV.get(), self.excel_table.get(), self.ecg.get(), self.rsp.get(), self.eda.get(), self.ppg.get(), self.slider.get(), self.rates_and_events.get()
+        print("Participant name and ID:", self.participant_name, self.participant_id)
+        return (
+            self.data_file, 
+            self.sampling_rate, 
+            self.researcher_initials, 
+            self.participant_name, 
+            self.participant_id,
+            self.HRV.get(), self.excel_table.get(), self.ecg.get(), self.rsp.get(), self.eda.get(), self.ppg.get(), self.slider.get(), self.rates_and_events.get()
+        )
 
 def main():
     gui_instance = DataAnalysisGUI()

@@ -1,7 +1,7 @@
 from gui.run_gui import main as run_gui
 # Initialize the GUI and get the input values
-data_file, sampling_rate, researcher_initials, participant_name, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events = run_gui()
-print("participant name: ", participant_name)
+data_file, sampling_rate, researcher_initials, participant_name, participant_id, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events = run_gui()
+
 from read.make_dataset import main as make_dataset
 # Make the dataset and receive the DataFrame and sampling rate
 df = make_dataset(data_file, sampling_rate, researcher_initials)
