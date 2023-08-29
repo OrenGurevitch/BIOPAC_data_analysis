@@ -6,12 +6,13 @@ class DataAnalysisGUI:
     def __init__(self):
         self.root = tk.Tk()
         self.root.title("M2B3 BIOPAC Data Analysis")
-        self.root.geometry("400x600")  # set initial window size
+        self.root.geometry("400x680")  # set initial window size
         
         # Initialize attributes
         self.data_file = ""
         self.sampling_rate = 0
         self.researcher_initials = ""
+        self.participant_name = ""
         self.HRV = tk.BooleanVar(value=False)
         self.excel_table = tk.BooleanVar(value=False)
         self.ecg = tk.BooleanVar(value=False)
@@ -36,15 +37,20 @@ class DataAnalysisGUI:
         
         tk.Button(self.root, text="Browse", font=medium_font, command=self.open_file).pack(pady=5)
 
+        tk.Label(self.root, text="Sampling Rate:", font=large_font).pack(pady=10)
+        
+        self.rate_entry = tk.Entry(self.root, font=medium_font)
+        self.rate_entry.pack(pady=5)
+
         tk.Label(self.root, text="Researcher Initials:", font=large_font).pack(pady=10)
         
         self.initials_entry = tk.Entry(self.root, font=medium_font)
         self.initials_entry.pack(pady=5)
 
-        tk.Label(self.root, text="Sampling Rate:", font=large_font).pack(pady=10)
+        tk.Label(self.root, text="Participant Name:", font=large_font).pack(pady=10)
         
-        self.rate_entry = tk.Entry(self.root, font=medium_font)
-        self.rate_entry.pack(pady=5)
+        self.name_entry = tk.Entry(self.root, font=medium_font)
+        self.name_entry.pack(pady=5)
                 
         tk.Checkbutton(self.root, text="HRV", variable=self.HRV).pack(pady=5)
         tk.Checkbutton(self.root, text="Excel Table", variable=self.excel_table).pack(pady=5)
@@ -66,20 +72,15 @@ class DataAnalysisGUI:
         validation_pass = True
 
         self.data_file = self.file_entry.get()
-        self.researcher_initials = self.initials_entry.get()
         rate_str = self.rate_entry.get()
+        self.researcher_initials = self.initials_entry.get()
+        self.participant_name = self.name_entry.get()
 
         if not self.data_file:
             self.file_entry.config(bg='red')
             validation_pass = False
         else:
             self.file_entry.config(bg='white')
-
-        if not self.researcher_initials:
-            self.initials_entry.config(bg='red')
-            validation_pass = False
-        else:
-            self.initials_entry.config(bg='white')
 
         if not rate_str:
             self.rate_entry.config(bg='red')
@@ -91,6 +92,18 @@ class DataAnalysisGUI:
             except ValueError:
                 messagebox.showerror("Error", "Sampling rate must be an integer")
                 return
+            
+        if not self.researcher_initials:
+            self.initials_entry.config(bg='red')
+            validation_pass = False
+        else:
+            self.initials_entry.config(bg='white')
+
+        if not self.participant_name:
+            self.name_entry.config(bg='red')
+            validation_pass = False
+        else:
+            self.name_entry.config(bg='white')
 
         if not validation_pass:
             messagebox.showwarning("Missing Info", "Please fill in the required fields highlighted in red")
@@ -99,15 +112,15 @@ class DataAnalysisGUI:
 
     def submit(self):
         self.data_file = self.file_entry.get()
-        self.researcher_initials = self.initials_entry.get()
         self.sampling_rate = int(self.rate_entry.get())
+        self.researcher_initials = self.initials_entry.get()
+        self.participant_name = self.name_entry.get()
         self.root.quit()
 
     def run(self):
         self.root.mainloop()
-        return self.data_file, self.sampling_rate, self.researcher_initials, self.HRV.get(), self.excel_table.get(), self.ecg.get(), self.rsp.get(), self.eda.get(), self.ppg.get(), self.slider.get(), self.rates_and_events.get()
+        return self.data_file, self.sampling_rate, self.researcher_initials, self.participant_name, self.HRV.get(), self.excel_table.get(), self.ecg.get(), self.rsp.get(), self.eda.get(), self.ppg.get(), self.slider.get(), self.rates_and_events.get()
 
 def main():
     gui_instance = DataAnalysisGUI()
-
-    gui_instance.run()
+    return gui_instance.run()
