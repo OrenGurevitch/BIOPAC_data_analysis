@@ -86,9 +86,9 @@ class ExcelTable:
 
         return eda_analysis_df, ecg_analysis_df, rsp_analysis_df
 
-    def save2path(self, eda_analysis_df, ecg_analysis_df, rsp_analysis_df, researcher_initials: str, feature_type: str):
+    def save2path(self, eda_analysis_df, ecg_analysis_df, rsp_analysis_df, researcher_initials: str, participant_id: str, feature_type: str):
         current_date = datetime.now().strftime("%Y_%m_%d")
-        excel_file_name = f"processed_data_{feature_type}_{researcher_initials}_{current_date}.csv"
+        excel_file_name = f"processed_data_{feature_type}_{participant_id}_{researcher_initials}_{current_date}.csv"
         script_dir = Path(__file__).resolve().parent.parent
         data_folder = script_dir.parent / "data" / "processed"
         excel_path = data_folder / excel_file_name
@@ -156,7 +156,7 @@ class RatesAndEvents:
         plt.show()
 
 
-def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: int, researcher_initials: str, events, HRV=False, excel_table=False, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False):
+def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: int, researcher_initials: str, participant_id: str, events, HRV=False, excel_table=False, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False):
     print("Visualizing data...")
     
     plot_processed = NKPlotProcessed(df, sampling_rate, processed_dataframes)
@@ -173,6 +173,6 @@ def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: in
     if excel_table:
         excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate)
         eda_analysis_df, ecg_analysis_df, rsp_analysis_df = excel_table_obj.analysis_data_signals()
-        excel_table_obj.save2path(eda_analysis_df, ecg_analysis_df, rsp_analysis_df, researcher_initials, "excel_table")
+        excel_table_obj.save2path(eda_analysis_df, ecg_analysis_df, rsp_analysis_df, researcher_initials, participant_id, "excel_table")
 
     print("Data visualization complete!")

@@ -25,9 +25,9 @@ class DataPreparation:
         labels_units = [f'{label} ({unit})' for label, unit in zip(labels, units)]
         return pd.DataFrame(data, columns=labels_units)
     
-    def save2path(self, df: pd.DataFrame, researcher_initials: str):
+    def save2path(self, df: pd.DataFrame, researcher_initials: str, participant_id: str):
         current_date = datetime.now().strftime("%Y_%m_%d")
-        raw_excel_file_name = f"preprocessed_data_{researcher_initials}_{current_date}.csv"
+        raw_excel_file_name = f"preprocessed_data_{participant_id}_{researcher_initials}_{current_date}.csv"
         script_dir = Path(__file__).resolve().parent.parent
         data_folder = script_dir.parent / "data" / "raw"
         raw_excel_path = data_folder / raw_excel_file_name
@@ -37,7 +37,7 @@ class DataPreparation:
         return raw_excel_path
 
 
-def main(data_file: Path, sampling_rate: int, researcher_initials: str):
+def main(data_file: Path, sampling_rate: int, researcher_initials: str, participant_id: str):
     print("Making dataset...")
     logger = logging.getLogger(__name__)
     logger.info('making final data set from .mat raw data')
@@ -47,7 +47,7 @@ def main(data_file: Path, sampling_rate: int, researcher_initials: str):
 
     if data is not None:
         df = data_prep.create_dataframe(data, labels, units)
-        raw_excel_path = data_prep.save2path(df, researcher_initials)
+        raw_excel_path = data_prep.save2path(df, researcher_initials, participant_id)
         print(f"Dataset created and saved in {raw_excel_path}")
 
     return df
