@@ -2,8 +2,7 @@ from gui.run_gui import DataAnalysisGUI
 
 # Initialize the GUI and get the input values
 gui_instance = DataAnalysisGUI()
-data_file, sampling_rate, researcher_initials = gui_instance.run()
-
+data_file, sampling_rate, researcher_initials, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events = gui_instance.run()
 
 #data_file = "C:\\Users\\oreng\\OneDrive - McGill University\\Documents\\Masters_Program\\Pilot Study\\recordings_pilot\\8_OG_pilot_tobii_biopac\\8_OG_pilot_July_25_2023.mat"
 #sampling_rate = 2000
@@ -19,7 +18,7 @@ processed_dataframes, events = build_features(df, sampling_rate, researcher_init
 
 from visualization.visualize import main as visualize
 #Choose which features to visualize?
-visualize(df, processed_dataframes, sampling_rate, researcher_initials, events, HRV=True, excel_table=True, ecg=True, rsp=True, eda=True, ppg=True, slider=True, rates_and_events=True)
+visualize(df, processed_dataframes, sampling_rate, researcher_initials, events, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events)
 
 #from src.visualization.gui import show_gui
 #show_gui(processed_dataframes, sampling_rate, excel_path, events)
