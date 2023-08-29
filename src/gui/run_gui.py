@@ -106,3 +106,8 @@ class DataAnalysisGUI:
     def run(self):
         self.root.mainloop()
         return self.data_file, self.sampling_rate, self.researcher_initials, self.HRV.get(), self.excel_table.get(), self.ecg.get(), self.rsp.get(), self.eda.get(), self.ppg.get(), self.slider.get(), self.rates_and_events.get()
+
+def main():
+    gui_instance = DataAnalysisGUI()
+
+    gui_instance.run()

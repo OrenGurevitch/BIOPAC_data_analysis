@@ -1,12 +1,6 @@
-from gui.run_gui import DataAnalysisGUI
-
+from gui.run_gui import main as run_gui
 # Initialize the GUI and get the input values
-gui_instance = DataAnalysisGUI()
-data_file, sampling_rate, researcher_initials, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events = gui_instance.run()
-
-#data_file = "C:\\Users\\oreng\\OneDrive - McGill University\\Documents\\Masters_Program\\Pilot Study\\recordings_pilot\\8_OG_pilot_tobii_biopac\\8_OG_pilot_July_25_2023.mat"
-#sampling_rate = 2000
-#researcher_initials = "OG"
+data_file, sampling_rate, researcher_initials, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events = run_gui()
 
 from read.make_dataset import main as make_dataset
 # Make the dataset and receive the DataFrame and sampling rate
