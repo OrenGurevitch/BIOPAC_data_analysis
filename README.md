@@ -12,7 +12,7 @@ Project Organization
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
     │   ├── external       <- Data from third party sources.
-    │   ├── interim        <- Processed physiological signals and event markers via NeuroKit, saved as CSV files.
+    │   ├── interim        <- Processed signals and event markers via NeuroKit, saved as CSV files.
     │   ├── processed      <- The final, canonical data sets for modeling.
     │   └── raw            <- The original, immutable data dump.
     │
@@ -39,8 +39,8 @@ Project Organization
     │   ├── read           <- Script to import and read data
     │   │   └── make_dataset.py
     │   │
-    │   ├── features       <- Script to turn raw data into processed physiological signals and event markers via 
-    │   │   │                 NeuroKit, saving them as CSV files.
+    │   ├── features       <- Script to turn raw data into processed physiological signals and event markers
+    │   │   │                 via NeuroKit, saving them as CSV files.
     │   │   └── build_features.py
     │   │
     │   ├── models         <- Scripts to train models and then use trained models to make
@@ -52,7 +52,7 @@ Project Organization
     │   │   └── train_model.py
     │   │   └── visualize.py
     │   │    
-    │   ├── gui           <- Script to run the gui
+    │   ├── gui           <- Script containing the gui code for user input and data selection
     │   │   └── run_gui.py
     │   │    
     │   └── main.py        <- Script for running the codes 
