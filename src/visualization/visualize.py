@@ -7,48 +7,60 @@ from datetime import datetime
 from pathlib import Path
 
 class NKPlotProcessed:
-    def __init__(self, df, sampling_rate, processed_dataframes):
+    def __init__(self, df, sampling_rate, processed_dataframes, researcher_initials, participant_id):
         self.df = df
         self.sampling_rate = sampling_rate
         self.processed_dataframes = processed_dataframes
         self.time = self.generate_time()  
+        self.researcher_initials = researcher_initials
+        self.participant_id = participant_id
 
     def generate_time(self):
         """Generate time array in minutes."""
         return np.arange(len(self.df)) / self.sampling_rate / 60
     
     def plot_processed(self, ecg=False, rsp=False, eda=False, ppg=False, slider=False):
+        figures_folder = create_folder_for_figures(self.researcher_initials, self.participant_id)
         if ecg:
             print(self.processed_dataframes['ecg'])
             nk.ecg_plot(self.processed_dataframes['ecg'], sampling_rate=self.sampling_rate)
+            plt.savefig(figures_folder / "ecg_plot.png")
             plt.show()
         if rsp:
             nk.rsp_plot(self.processed_dataframes['rsp'], sampling_rate=self.sampling_rate)
+            plt.savefig(figures_folder / "rsp_plot.png")
             plt.show()
         if eda:
             nk.eda_plot(self.processed_dataframes['eda'], sampling_rate=self.sampling_rate)
+            plt.savefig(figures_folder / "eda_plot.png")
             plt.show()
         if ppg:
             nk.ppg_plot(self.processed_dataframes['ppg'], sampling_rate=self.sampling_rate)
+            plt.savefig(figures_folder / "ppg_plot.png")
             plt.show()
         if slider:
             plt.plot(self.time, self.processed_dataframes['slider'])
             plt.xlabel("Time (minutes)")
             plt.ylabel("Slider Score")
             plt.title("Filtered Slider Score Over Time")
+            plt.savefig(figures_folder / "slider_plot.png")
             plt.show()
-
+        
 class HRVPlot:
-    def __init__(self, df, sampling_rate):
+    def __init__(self, df, sampling_rate, researcher_initials, participant_id):
         self.df = df
         self.sampling_rate = sampling_rate
+        self.researcher_initials = researcher_initials
+        self.participant_id = participant_id
 
     def plot(self):
         # Processing ECG data for HRV is like making a special dish with extra steps.
         ecg = self.df["ECG100C (mV)"].values
         peaks, info = nk.ecg_peaks(ecg, sampling_rate=self.sampling_rate)
-        nk.hrv(peaks, sampling_rate=self.sampling_rate, show=False)  # show=False to avoid showing the plot
-        plt.show()
+        nk.hrv(peaks, sampling_rate=self.sampling_rate, show=True)
+
+        figures_folder = create_folder_for_figures(self.researcher_initials, self.participant_id)
+        plt.savefig(figures_folder / "hrv_plot.png")
 
 class ExcelTable:
     def __init__(self, processed_dataframes, events, sampling_rate):
@@ -102,13 +114,16 @@ class ExcelTable:
 
         print(f"Results saved to Excel at {excel_path}")
 
+
 class RatesAndEvents:
-    def __init__(self, sampling_rate, df, events, processed_dataframes):
+    def __init__(self, sampling_rate, df, events, processed_dataframes, researcher_initials, participant_id):
         self.sampling_rate = sampling_rate
         self.time = self.generate_time(df)
         self.events = events
         self.df = df
         self.processed_dataframes = processed_dataframes
+        self.researcher_initials = researcher_initials
+        self.participant_id = participant_id
     
     def generate_time(self, df):
         """Generate time array in minutes."""
@@ -153,21 +168,36 @@ class RatesAndEvents:
         self.annotate_events()
 
         plt.tight_layout()
+
+        # Get folder path to save figures
+        folder_path = create_folder_for_figures(self.researcher_initials, self.participant_id)
+        # Create figure name and save
+        plt.savefig(folder_path / "rates&events_plot.png")
         plt.show()
 
+
+# Utility function to create and return the new directory path
+def create_folder_for_figures(researcher_initials, participant_id):
+    current_date = datetime.now().strftime("%Y_%m_%d")
+    folder_name = f"{participant_id}_{researcher_initials}_{current_date}"
+    script_dir = Path(__file__).resolve().parent.parent
+    figures_folder = script_dir.parent / "reports" / "figures" / folder_name
+    if not figures_folder.exists():
+        figures_folder.mkdir(parents=True) 
+    return figures_folder
 
 def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: int, researcher_initials: str, participant_id: str, events, HRV=False, excel_table=False, ecg=False, rsp=False, eda=False, ppg=False, slider=False, rates_and_events=False):
     print("Visualizing data...")
     
-    plot_processed = NKPlotProcessed(df, sampling_rate, processed_dataframes)
+    plot_processed = NKPlotProcessed(df, sampling_rate, processed_dataframes, researcher_initials, participant_id)
     plot_processed.plot_processed(ecg, rsp, eda, ppg, slider)
 
     if rates_and_events:
-        rates_and_events_plotter = RatesAndEvents(sampling_rate, df, events, processed_dataframes)
+        rates_and_events_plotter = RatesAndEvents(sampling_rate, df, events, processed_dataframes, researcher_initials, participant_id)
         rates_and_events_plotter.plot_rates_and_events()
 
     if HRV:
-        hrv_plot = HRVPlot(df, sampling_rate)
+        hrv_plot = HRVPlot(df, sampling_rate, researcher_initials, participant_id)
         hrv_plot.plot()
 
     if excel_table:

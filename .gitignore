@@ -8,6 +8,9 @@ __pycache__/
 # Add the Virtual Environment Folder to the .gitignore File
 myenv/
 
+# Ignore reports/figures folder
+reports/figures/
+
 # Distribution / packaging
 .Python
 env/

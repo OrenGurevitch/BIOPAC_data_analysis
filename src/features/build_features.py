@@ -5,40 +5,40 @@ from datetime import datetime
 from pathlib import Path
 
 class FeatureBuilder:
-    def __init__(self, df: pd.DataFrame, sampling_rate: int, column_labels: dict):
+    def __init__(self, 
+                 df: pd.DataFrame, 
+                 sampling_rate: int, 
+                 column_labels: dict = None):
         self.df = df
         self.sampling_rate = sampling_rate
         self.column_labels = column_labels
 
     def _process(self, process_func, column_label):
-        nk_processed_signals, _ = process_func(self.df[column_label], self.sampling_rate)
-        return nk_processed_signals
+        processed_signals, _ = process_func(self.df[column_label], self.sampling_rate)
+        return processed_signals
 
     def _process_slider(self):
-        column_label = "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
+        column_label = self.column_labels['slider']
         if column_label in self.df.columns:
             slider_scores = self.df[column_label]
-            filtered_signal = nk.signal_filter(slider_scores, method="savgol", sampling_rate=self.sampling_rate, lowcut=0.1, highcut=None)
+            filtered_signal = nk.signal_filter(slider_scores, 
+                                               method="savgol", 
+                                               sampling_rate=self.sampling_rate, 
+                                               lowcut=0.1, 
+                                               highcut=None)
             return pd.DataFrame({'slider': filtered_signal})
-        else:
-            return None
+        return None
 
     def process_signals(self):
-        ecg_processed = self._process(nk.ecg_process, self.column_labels['ecg'])
-        rsp_processed = self._process(nk.rsp_process, self.column_labels['rsp'])
-        eda_processed = self._process(nk.eda_process, self.column_labels['eda'])
-        ppg_processed = self._process(nk.ppg_process, self.column_labels['ppg'])
-        slider_processed = self._process_slider()
+        processed_dataframes = {}
+        for signal_type, process_func in zip(['ecg', 'rsp', 'eda', 'ppg'], 
+                                             [nk.ecg_process, nk.rsp_process, nk.eda_process, nk.ppg_process]):
+            processed_dataframes[signal_type] = self._process(process_func, self.column_labels[signal_type])
+        
+        processed_dataframes['slider'] = self._process_slider()
 
         events = self._create_events()
 
-        processed_dataframes = {
-            'ecg': ecg_processed,
-            'rsp': rsp_processed,
-            'eda': eda_processed,
-            'ppg': ppg_processed,
-            'slider': slider_processed
-        }
         return processed_dataframes, events
 
     def _create_events(self):
@@ -50,25 +50,39 @@ class FeatureBuilder:
  
     def save2path(self, df: pd.DataFrame, researcher_initials: str, participant_id: str, feature_type: str):
         current_date = datetime.now().strftime("%Y_%m_%d")
-        excel_file_name = f"intermediate_data_{participant_id}_{researcher_initials}_{current_date}.csv"
+        
+        # Create a folder name with initials, id and date
+        folder_name = f"{researcher_initials}_{participant_id}_{current_date}"
+        
         script_dir = Path(__file__).resolve().parent.parent
-        data_folder = script_dir.parent / "data" / "interim"
-        excel_path = data_folder / excel_file_name
+        data_folder = script_dir.parent / "data" / "interim" / folder_name
+        
+        # Create a new folder if it does not exist
         if not data_folder.exists():
             data_folder.mkdir(parents=True)
+        
+        # Generate Excel file name based on feature_type
+        excel_file_name = f"intermediate_data_{feature_type}.csv"
+        
+        # Create complete Excel path
+        excel_path = data_folder / excel_file_name
+        
+        # Save the DataFrame to CSV
         df.to_csv(excel_path)
+        
         return excel_path
 
 def main(df: pd.DataFrame, sampling_rate: int, researcher_initials: str, participant_id: str):
     print("Building features...")
     
     column_labels = {
-        "eda": "EDA100C (microsiemens)",
-        "rsp": "RSP100C (Volts)",
-        "ecg": "ECG100C (mV)",
-        "ppg": "Status, OXY100C (Status)"
-    }
-    
+            "eda": "EDA100C (microsiemens)",
+            "rsp": "RSP100C (Volts)",
+            "ecg": "ECG100C (mV)",
+            "ppg": "Status, OXY100C (Status)",
+            "slider": "Slider - TSD115 - Psychological assessment, AMI / HLT - A15 (number)"
+        }
+
     builder = FeatureBuilder(df, sampling_rate, column_labels)
     intermediate_dataframes, _ = builder.process_signals()
 
