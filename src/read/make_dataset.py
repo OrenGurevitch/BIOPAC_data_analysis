@@ -38,7 +38,7 @@ class DataPreparation:
 
 
 def main(data_file: Path, sampling_rate: int, researcher_initials: str, participant_id: str):
-    print("Making dataset...")
+    print("Reading dataset...")
     logger = logging.getLogger(__name__)
     logger.info('making final data set from .mat raw data')
 
