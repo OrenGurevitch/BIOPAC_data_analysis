@@ -8,6 +8,7 @@ Project Organization
 
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
+    ├── assets             <- Assets used in the README, such as images showcasing the GUI interface.
     ├── README.md          <- The top-level README for developers using this project.
     ├── data
     │   ├── external       <- Data from third party sources.
