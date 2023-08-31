@@ -64,7 +64,7 @@ class DataAnalysisGUI:
         tk.Checkbutton(self.root, text="Slider", variable=self.slider).pack(pady=5)
         tk.Checkbutton(self.root, text="Rates and Events", variable=self.rates_and_events).pack(pady=5)
         
-        tk.Button(self.root, text="Submit", font=medium_font, command=self.validate_and_submit).pack(pady=20)
+        tk.Button(self.root, text="Let's go!", font=medium_font, command=self.validate_and_submit).pack(pady=20)
 
     def open_file(self):
         file_path = filedialog.askopenfilename(filetypes=[("MAT files", "*.mat"), ("ACQ files", "*.acq")])
