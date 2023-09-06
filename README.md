@@ -18,12 +18,6 @@ Project Organization
     │
     ├── docs               <- A default Sphinx project; see sphinx-doc.org for details
     │
-    ├── models             <- Trained and serialized models, model predictions, or model summaries
-    │
-    ├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-    │                         the creator's initials, and a short `-` delimited description, e.g.
-    │                         `1.0-jqp-initial-data-exploration`.
-    │
     ├── references         <- Data dictionaries, manuals, and all other explanatory materials.
     │
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
@@ -43,13 +37,7 @@ Project Organization
     │   │   │                 via NeuroKit, saving them as CSV files.
     │   │   └── build_features.py
     │   │
-    │   ├── models         <- Scripts to train models and then use trained models to make
-    │   │   │                 predictions
-    │   │   ├── predict_model.py
-    │   │   └── train_model.py
-    │   │
     │   ├── visualization  <- Scripts to create exploratory and results oriented visualizations
-    │   │   └── train_model.py
     │   │   └── visualize.py
     │   │    
     │   ├── gui           <- Script containing the gui code for user input and data selection
@@ -57,7 +45,7 @@ Project Organization
     │   │    
     │   └── main.py        <- Script for running the codes 
     │
-    └── tox.ini            <- tox file with settings for running tox; see tox.readthedocs.io
+    └── 
 
 ![Image Description](./assets/gui_window_scshot.png)
 --------
