@@ -1,5 +1,5 @@
 from gui.run_gui import main as run_gui
-# Initialize the GUI and get the input values
+# Initialize the GUI and get the input values # set\dict for true false # set of enum values
 data_file, sampling_rate, researcher_initials, participant_name, participant_id, HRV, excel_table, ecg, rsp, eda, ppg, slider, rates_and_events = run_gui()
 
 from read.make_dataset import main as make_dataset

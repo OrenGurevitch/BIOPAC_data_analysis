@@ -25,7 +25,6 @@ class DataAnalysisGUI:
         self.slider = tk.BooleanVar(value=False)
         self.rates_and_events = tk.BooleanVar(value=False)
 
-        # Better fonts
         large_font = ("Verdana", 12)
         medium_font = ("Verdana", 10)
         
