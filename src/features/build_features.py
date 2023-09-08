@@ -33,7 +33,10 @@ class FeatureBuilder:
         processed_dataframes = {}
         for signal_type, process_func in zip(['ecg', 'rsp', 'eda', 'ppg'], 
                                              [nk.ecg_process, nk.rsp_process, nk.eda_process, nk.ppg_process]):
-            processed_dataframes[signal_type] = self._process(process_func, self.column_labels[signal_type])
+            if self.column_labels[signal_type] == nk.rsp_process:
+                processed_dataframes[signal_type] = self._process(process_func, self.column_labels[signal_type])
+            else:    
+                processed_dataframes[signal_type] = self._process(process_func, self.column_labels[signal_type])
         
         processed_dataframes['slider'] = self._process_slider()
 
@@ -42,9 +45,10 @@ class FeatureBuilder:
         return processed_dataframes, events
 
     def _create_events(self):
-        event_labels = ["Absorptive", "1stSilence", "Self-Chosen Absorptive", "2ndSilence", "Self-Chosen Non-absorptive", "3rdSilence"]
+        event_labels = ["Absorptive", "1stSilence", "1stPCI", "Self-Chosen Absorptive", "2ndSilence", "2ndPCI", "Self-Chosen Non-absorptive", "3rdSilence"]
         event_labels_unique = [f"{label}_{i+1}" for i, label in enumerate(event_labels)]
-        event_onsets_seconds = [0, 420, 600, 1020, 1200, 1620]
+        #event_onsets_seconds = [0, 420, 600, 1020, 1200, 1620]
+        event_onsets_seconds = [0, 420, 605.34, 638.736, 1057.152, 1237.152, 1261.068, 1679.976] #until the end of 3rd silence, no 3rd PCI in the end
         event_onsets_indices = [int(i * self.sampling_rate) for i in event_onsets_seconds]
         return nk.events_create(event_onsets=event_onsets_indices, event_labels=event_labels_unique)
  

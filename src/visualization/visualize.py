@@ -144,27 +144,33 @@ class RatesAndEvents:
         plt.suptitle("Data Visualization", fontsize=20)
 
         # Heart Rate (ECG) subplot        
-        plt.subplot(4, 1, 1)
+        plt.subplot(5, 1, 1)
         plt.plot(self.time, self.processed_dataframes['ecg']['ECG_Rate'], color='cyan', linewidth=0.5)
         plt.title("Heart Rate (BPM)")
         self.annotate_events()
 
         # Breathing Rate (RSP) subplot
-        plt.subplot(4, 1, 2)
+        plt.subplot(5, 1, 2)
         plt.plot(self.time, self.processed_dataframes['rsp']['RSP_Rate'], color='blue', linewidth=0.5) # Fixed 'ecg' to 'rsp'
         plt.title("Breathing Rate")
         self.annotate_events()
 
         # SCR (EDA) subplot
-        plt.subplot(4, 1, 3)
+        plt.subplot(5, 1, 3)
         plt.plot(self.time, self.processed_dataframes['eda']["EDA_Phasic"], color='green', linewidth=0.5)
         plt.title("SCR (EDA)")
         self.annotate_events()
 
         # SCL (EDA) subplot
-        plt.subplot(4, 1, 4)
+        plt.subplot(5, 1, 4)
         plt.plot(self.time, self.processed_dataframes['eda']["EDA_Tonic"], color='orange', linewidth=0.5)
         plt.title("SCL (EDA)")
+        self.annotate_events()
+
+        # Slider subplot
+        plt.subplot(5,1,5)
+        plt.plot(self.time, self.processed_dataframes['slider'], color='purple', linewidth=0.5)
+        plt.title("Slider Score")
         self.annotate_events()
 
         plt.tight_layout()
