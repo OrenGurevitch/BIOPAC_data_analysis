@@ -70,19 +70,30 @@ class ExcelTable:
         self.ecg_signals = self.processed_dataframes['ecg']
         self.rsp_signals = self.processed_dataframes['rsp']
         self.eda_signals = self.processed_dataframes['eda']
-    
+
     def analysis_dataframe(self, analysis_function, signal):
         results_list = []
 
-        for onset, label in zip(self.events["onset"], self.events["label"]):
-            offset = onset + 7 * 60 * self.sampling_rate if "Silence" not in label else onset + 3 * 60 * self.sampling_rate
+        for i, (onset, label) in enumerate(zip(self.events["onset"], self.events["label"])):
+
+            # Ignore events with the label "pci"
+            if "pci" in label.lower():
+                continue # Skip this iteration of the loop
+
+            print(label)
+            if i < len(self.events["onset"]) - 1:
+                offset = self.events["onset"][i + 1]
+            else:
+                offset = len(signal)
+
+            print(f"onset: {onset}, offset: {offset}")
             epoch = signal.iloc[onset:offset]
 
             if epoch.empty:
                 print(f"Warning: Empty epoch for label {label}")
                 continue
 
-            result = analysis_function(epoch, sampling_rate=self.sampling_rate) # Use the argument, not self
+            result = analysis_function(epoch, sampling_rate=self.sampling_rate) 
             result.insert(0, 'Event_Label', label)
             results_list.append(result)
 
@@ -210,5 +221,5 @@ def main(df: pd.DataFrame, processed_dataframes: pd.DataFrame, sampling_rate: in
         excel_table_obj = ExcelTable(processed_dataframes, events, sampling_rate)
         eda_analysis_df, ecg_analysis_df, rsp_analysis_df = excel_table_obj.analysis_data_signals()
         excel_table_obj.save2path(eda_analysis_df, ecg_analysis_df, rsp_analysis_df, researcher_initials, participant_id, "excel_table")
-
+    
     print("Data visualization complete!")
