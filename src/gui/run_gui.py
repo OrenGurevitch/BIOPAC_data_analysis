@@ -55,7 +55,7 @@ class DataAnalysisGUI:
         self.name_entry.pack(pady=5)
                 
         tk.Checkbutton(self.root, text="HRV", variable=self.HRV).pack(pady=5)
-        tk.Checkbutton(self.root, text="Excel Table", variable=self.excel_table).pack(pady=5)
+        tk.Checkbutton(self.root, text="Save Excel Table & Plot Bars", variable=self.excel_table).pack(pady=5)
         tk.Checkbutton(self.root, text="ECG", variable=self.ecg).pack(pady=5)
         tk.Checkbutton(self.root, text="RSP", variable=self.rsp).pack(pady=5)
         tk.Checkbutton(self.root, text="EDA", variable=self.eda).pack(pady=5)
