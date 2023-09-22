@@ -47,22 +47,25 @@ class FeatureBuilder:
     def _create_events(self):
 
         # in order to find the seconds of the events, i looked at the recording, and found the seconds of the events manually
-        # to find the start of the stimulus, i looked at when the bell rang in the end of the silence
+        # to find the start of the stimulus, i looked at when the slider scale was changing between non absorptive to jumps between 0 to 9 (we used it as indicator for the start\end of the stimulus)
+        # I went to the preprocessed data file, then to the slider, chagned the view of the column to conditional formatting, scrolled down and found it at 712,549
 
-        ## 8_OG_pilot_tobii_biopac ##
+
+        '''8_OG_pilot_tobii_biopac'''
         #8_OG_pilot_tobii_biopac experiment procedure event labels - abs 7 min, silence 3 min, "PCI" 1~ min, self-chosen-abs 7 min, silence 3 minu, "PCI" 1~ min
         #event_labels = ["Absorptive", "1stSilence", "1stPCI", "Self-Chosen Absorptive", "2ndSilence", "2ndPCI", "Self-Chosen Non-absorptive", "3rdSilence"]
-
         #8_OG_pilot_tobii_biopac experiment events onesets in seconds (around 30 minutes of recording - 1800~ seconds/ 60 seconds = 30 minutes)
         #event_onsets_seconds = [0, 420, 605.34, 638.736, 1057.152, 1237.152, 1261.068, 1679.976] #until the end of 3rd silence, no 3rd PCI in the end
 
-        ## 6_BAK_pilot_tobii_biopac ##
+        '''6_BAK_pilot_tobii_biopac'''
         #event labels of 6_BAK_pilot_tobii_biopac experiment procedure - silence 5 minutes, abs 10 min, "PCI" around 1 minute, non-abs 10 min, silence 5 minutes
-        event_labels = ["1stSilence", "1stPCI", "Self-Chosen Absorptive", "2ndPCI", "Self-Chosen Absorptive", "3rdPCI" "2ndSilence", "4thPCI"]
-        event_labels_unique = [f"{label}_{i+1}" for i, label in enumerate(event_labels)]
-
+        event_labels = ["1stSilence", "1stPCI", "Self-Chosen Non-absorptive", "2ndPCI", "Self-Chosen Absorptive", "3rdPCI", "2ndSilence", "4thPCI"]
         #6_BAK_pilot_tobii_biopac experiment events onesets in seconds
-        event_onsets_seconds = [22, 322, 369, 969, 1005, 1605, 1659, 1959]
+        event_onsets_seconds = [22, 322, 369, 969, 1005, 1605, 1659, 1959] #356.2 no 322
+        # add the difference of my mistake, 356.2 - 322 = 34.2 to each one of the events seconds
+        event_onsets_seconds = [56.2, 356.2, 403.2, 1003.2, 1039.2, 1639.2, 1693.2, 1993.2]
+
+        event_labels_unique = [f"{label}_{i+1}" for i, label in enumerate(event_labels)]
 
         # convert time from seconds to indices
         event_onsets_indices = [int(i * self.sampling_rate) for i in event_onsets_seconds] 
