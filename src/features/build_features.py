@@ -45,11 +45,27 @@ class FeatureBuilder:
         return processed_dataframes, events
 
     def _create_events(self):
-        event_labels = ["Absorptive", "1stSilence", "1stPCI", "Self-Chosen Absorptive", "2ndSilence", "2ndPCI", "Self-Chosen Non-absorptive", "3rdSilence"]
+
+        # in order to find the seconds of the events, i looked at the recording, and found the seconds of the events manually
+        # to find the start of the stimulus, i looked at when the bell rang in the end of the silence
+
+        ## 8_OG_pilot_tobii_biopac ##
+        #8_OG_pilot_tobii_biopac experiment procedure event labels - abs 7 min, silence 3 min, "PCI" 1~ min, self-chosen-abs 7 min, silence 3 minu, "PCI" 1~ min
+        #event_labels = ["Absorptive", "1stSilence", "1stPCI", "Self-Chosen Absorptive", "2ndSilence", "2ndPCI", "Self-Chosen Non-absorptive", "3rdSilence"]
+
+        #8_OG_pilot_tobii_biopac experiment events onesets in seconds (around 30 minutes of recording - 1800~ seconds/ 60 seconds = 30 minutes)
+        #event_onsets_seconds = [0, 420, 605.34, 638.736, 1057.152, 1237.152, 1261.068, 1679.976] #until the end of 3rd silence, no 3rd PCI in the end
+
+        ## 6_BAK_pilot_tobii_biopac ##
+        #event labels of 6_BAK_pilot_tobii_biopac experiment procedure - silence 5 minutes, abs 10 min, "PCI" around 1 minute, non-abs 10 min, silence 5 minutes
+        event_labels = ["1stSilence", "1stPCI", "Self-Chosen Absorptive", "2ndPCI", "Self-Chosen Absorptive", "3rdPCI" "2ndSilence", "4thPCI"]
         event_labels_unique = [f"{label}_{i+1}" for i, label in enumerate(event_labels)]
-        #event_onsets_seconds = [0, 420, 600, 1020, 1200, 1620]
-        event_onsets_seconds = [0, 420, 605.34, 638.736, 1057.152, 1237.152, 1261.068, 1679.976] #until the end of 3rd silence, no 3rd PCI in the end
-        event_onsets_indices = [int(i * self.sampling_rate) for i in event_onsets_seconds]
+
+        #6_BAK_pilot_tobii_biopac experiment events onesets in seconds
+        event_onsets_seconds = [22, 322, 369, 969, 1005, 1605, 1659, 1959]
+
+        # convert time from seconds to indices
+        event_onsets_indices = [int(i * self.sampling_rate) for i in event_onsets_seconds] 
         return nk.events_create(event_onsets=event_onsets_indices, event_labels=event_labels_unique)
  
     def save2path(self, df: pd.DataFrame, researcher_initials: str, participant_id: str, feature_type: str):
