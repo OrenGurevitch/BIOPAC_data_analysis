@@ -61,8 +61,6 @@ class FeatureBuilder:
         #event labels of 6_BAK_pilot_tobii_biopac experiment procedure - silence 5 minutes, abs 10 min, "PCI" around 1 minute, non-abs 10 min, silence 5 minutes
         event_labels = ["1stSilence", "1stPCI", "Self-Chosen Non-absorptive", "2ndPCI", "Self-Chosen Absorptive", "3rdPCI", "2ndSilence", "4thPCI"]
         #6_BAK_pilot_tobii_biopac experiment events onesets in seconds
-        event_onsets_seconds = [22, 322, 369, 969, 1005, 1605, 1659, 1959] #356.2 no 322
-        # add the difference of my mistake, 356.2 - 322 = 34.2 to each one of the events seconds
         event_onsets_seconds = [56.2, 356.2, 403.2, 1003.2, 1039.2, 1639.2, 1693.2, 1993.2]
 
         event_labels_unique = [f"{label}_{i+1}" for i, label in enumerate(event_labels)]
